@@ -202,7 +202,7 @@ The plan data for a plugin with a free plan and a Pro plan:
     </ResponseField>
 
     <ResponseField name="features" type="object[]">
-      Every feature the plan includes, not only the ones it adds to the plan below it. Skills come first, then tools, then database records, each in alphabetical order.
+      Every feature the plan includes that you show on your pricing page, not only the ones it adds to the plan below it. An unrestricted feature, which is on none of your plans, appears on every plan as `unlimited`. Skills come first, then tools, then database records, each in alphabetical order.
 
       <Expandable title="properties" defaultOpen>
         <ResponseField name="id" type="string">
@@ -238,7 +238,7 @@ The plan data for a plugin with a free plan and a Pro plan:
 </ResponseField>
 
 <ResponseField name="credit_costs" type="object[]">
-  The features that use credits instead of a limit of their own, and what each use costs. They aren't listed in any plan's `features`: every plan with `credits` includes them.
+  The features you show on your pricing page that use credits instead of a limit of their own, and what each use costs. They aren't listed in any plan's `features`: every plan with `credits` includes them.
 
   <Expandable title="properties" defaultOpen>
     <ResponseField name="id" type="string">
