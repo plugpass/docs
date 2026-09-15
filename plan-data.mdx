@@ -1,0 +1,294 @@
+---
+title: "Plan data"
+description: "Everything your pricing page needs to show your plans."
+---
+
+Your plan data describes your published plans: each plan's prices, credits, and features, and where its call-to-action button takes a visitor. Use it to build a pricing page on your own site that always matches what you've published.
+
+## Fetch your plan data
+
+With the Plugpass snippet on your pricing page, fetch your plan data on every page load:
+
+```js
+const planData = await window.plugpass.plans();
+```
+
+If your pricing page renders on the server or at build time, fetch the plan data from `/plans.json` on your Plugpass-hosted domain, like `https://get.coolplugin.com/plans.json`, then replace it with the response from `plugpass.plans()` so your page always reflects your published plans.
+
+## Example
+
+The plan data for a plugin with a free plan and a Pro plan:
+
+```json Plan data expandable
+{
+  "preview": false,
+  "currency": "usd",
+  "billing_intervals": ["monthly", "annual"],
+  "plans": [
+    {
+      "slug": "free",
+      "name": "Free",
+      "description": null,
+      "is_free": true,
+      "prices": [
+        {
+          "interval": "monthly",
+          "amount_cents": 0,
+          "plan_selected_url": "https://get.coolplugin.com/signup",
+          "change_type": "signup"
+        },
+        {
+          "interval": "annual",
+          "amount_cents": 0,
+          "plan_selected_url": "https://get.coolplugin.com/signup",
+          "change_type": "signup"
+        }
+      ],
+      "credits": null,
+      "features": [
+        {
+          "id": "ent_4kQ9xTmZ",
+          "type": "skill",
+          "display_name": "Quick brainstorm",
+          "mid_sentence_name": "quick brainstorm",
+          "limit_type": "monthly",
+          "quantity": 10,
+          "pitch": "generates a short list of fresh ideas on any topic"
+        },
+        {
+          "id": "ent_Hn6cYs3J",
+          "type": "database_record",
+          "display_name": "Saved topics",
+          "mid_sentence_name": "saved topics",
+          "limit_type": "total",
+          "quantity": 3,
+          "pitch": "keep the topics you want to come back to"
+        }
+      ]
+    },
+    {
+      "slug": "pro",
+      "name": "Pro",
+      "description": "For people who brainstorm every day.",
+      "is_free": false,
+      "prices": [
+        {
+          "interval": "monthly",
+          "amount_cents": 1000,
+          "plan_selected_url": "https://get.coolplugin.com/checkout?plan=pro&term=monthly",
+          "change_type": "upgrade"
+        },
+        {
+          "interval": "annual",
+          "amount_cents": 9600,
+          "plan_selected_url": "https://get.coolplugin.com/checkout?plan=pro&term=annual",
+          "change_type": "upgrade"
+        }
+      ],
+      "credits": {
+        "limit_type": "monthly",
+        "quantity": 500
+      },
+      "features": [
+        {
+          "id": "ent_4kQ9xTmZ",
+          "type": "skill",
+          "display_name": "Quick brainstorm",
+          "mid_sentence_name": "quick brainstorm",
+          "limit_type": "unlimited",
+          "quantity": null,
+          "pitch": "generates a short list of fresh ideas on any topic"
+        },
+        {
+          "id": "ent_Vd2pLw8R",
+          "type": "tool",
+          "display_name": "Topic ideas",
+          "mid_sentence_name": "topic ideas",
+          "limit_type": "unlimited",
+          "quantity": null,
+          "pitch": "suggests topics to start a brainstorm with"
+        },
+        {
+          "id": "ent_Hn6cYs3J",
+          "type": "database_record",
+          "display_name": "Saved topics",
+          "mid_sentence_name": "saved topics",
+          "limit_type": "total",
+          "quantity": 50,
+          "pitch": "keep the topics you want to come back to"
+        }
+      ]
+    }
+  ],
+  "credit_costs": [
+    {
+      "id": "ent_Qm4tRz8w",
+      "type": "skill",
+      "display_name": "Deep brainstorm",
+      "credit_cost": 5
+    }
+  ]
+}
+```
+
+## Fields
+
+<ResponseField name="preview" type="boolean">
+  `true` when your pricing page was opened with **Preview pricing page** in your dashboard. The plan data then shows your unpublished changes.
+</ResponseField>
+
+<ResponseField name="currency" type="string">
+  The currency of every price. Always `usd`.
+</ResponseField>
+
+<ResponseField name="billing_intervals" type="string[]">
+  The billing intervals your plans offer, `monthly` first. When both are offered, let visitors choose between them.
+</ResponseField>
+
+<ResponseField name="plans" type="object[]">
+  Your plans, in order from least to most expensive.
+
+  <Expandable title="properties" defaultOpen>
+    <ResponseField name="slug" type="string">
+      The plan's name as it appears in URLs, like `pro`. It changes when you rename the plan.
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      The plan's name.
+    </ResponseField>
+
+    <ResponseField name="description" type="string | null">
+      The plan's description, or `null` if it has none.
+    </ResponseField>
+
+    <ResponseField name="is_free" type="boolean">
+      `true` for your free plan.
+    </ResponseField>
+
+    <ResponseField name="prices" type="object[]">
+      One price for each billing interval. A free plan has a price of `0` on every billing interval, so you can show every plan the same way.
+
+      <Expandable title="properties" defaultOpen>
+        <ResponseField name="interval" type="string">
+          `monthly` or `annual`.
+        </ResponseField>
+
+        <ResponseField name="amount_cents" type="number">
+          The price of the whole interval, in cents. An annual price is the price of a year, so divide it by 12 to show a monthly price.
+        </ResponseField>
+
+        <ResponseField name="plan_selected_url" type="string | null">
+          Where the plan's call-to-action button takes the visitor for this interval, or `null` when it's their current plan and interval.
+        </ResponseField>
+
+        <ResponseField name="change_type" type="string">
+          What choosing this plan and interval means for the visitor: `signup`, `upgrade`, `downgrade`, or `current_plan`. See [Change types](#change-types).
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="credits" type="object | null">
+      The credits the plan includes, or `null` if it includes none.
+
+      <Expandable title="properties" defaultOpen>
+        <ResponseField name="limit_type" type="string">
+          `monthly`, `total`, or `unlimited`. See [Limit types](#limit-types).
+        </ResponseField>
+
+        <ResponseField name="quantity" type="number | null">
+          How many credits, or `null` when unlimited.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="features" type="object[]">
+      Every feature the plan includes, not only the ones it adds to the plan below it. Skills come first, then tools, then database records, each in alphabetical order.
+
+      <Expandable title="properties" defaultOpen>
+        <ResponseField name="id" type="string">
+          The feature's ID. It stays the same when you rename the feature.
+        </ResponseField>
+
+        <ResponseField name="type" type="string">
+          `skill`, `tool`, or `database_record`. A database record is something your users keep, like saved topics or documents, and its limit is how many they can have at once.
+        </ResponseField>
+
+        <ResponseField name="display_name" type="string">
+          The feature's name as a label, like `Quick brainstorm`.
+        </ResponseField>
+
+        <ResponseField name="mid_sentence_name" type="string">
+          The feature's name as it reads in the middle of a sentence, like `quick brainstorm`.
+        </ResponseField>
+
+        <ResponseField name="limit_type" type="string">
+          `monthly`, `total`, or `unlimited`. See [Limit types](#limit-types).
+        </ResponseField>
+
+        <ResponseField name="quantity" type="number | null">
+          The number the limit allows, or `null` when unlimited.
+        </ResponseField>
+
+        <ResponseField name="pitch" type="string | null">
+          The end of a sentence describing the feature, or `null` if it has none. See [Feature pitches](#feature-pitches).
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="credit_costs" type="object[]">
+  The features that use credits instead of a limit of their own, and what each use costs. They aren't listed in any plan's `features`: every plan with `credits` includes them.
+
+  <Expandable title="properties" defaultOpen>
+    <ResponseField name="id" type="string">
+      The feature's ID. It stays the same when you rename the feature.
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      `skill` or `tool`.
+    </ResponseField>
+
+    <ResponseField name="display_name" type="string">
+      The feature's name as a label.
+    </ResponseField>
+
+    <ResponseField name="credit_cost" type="number">
+      How many credits one use costs.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Change types
+
+Each price's `change_type` says what choosing that plan and interval means for the visitor, and its `plan_selected_url` takes them there.
+
+| Value | When | Links to |
+| --- | --- | --- |
+| `signup` | The free plan, for a visitor who isn't on a paid plan | Sign up |
+| `upgrade` | A paid plan for a visitor who isn't on one, a higher plan than the visitor's current plan, or their current plan billed annually when they pay monthly | Checkout |
+| `downgrade` | A lower plan than the visitor's current plan, including the free plan, or their current plan billed monthly when they pay annually | Billing settings |
+| `current_plan` | The paid plan and interval the visitor is on | Nothing (`null`) |
+
+Set each plan's call-to-action button to its `plan_selected_url` for the selected billing interval, and disable or hide the button for a `current_plan`. You can do the same for a `downgrade`.
+
+<Note>
+  Your pricing page only knows a visitor's current plan when they're signed in and your site shares a domain with your Plugpass-hosted pages, like `coolplugin.com` and `get.coolplugin.com`. Otherwise, every price is a `signup` or an `upgrade`, and checkout sends a visitor who is already on a paid plan to their billing settings.
+</Note>
+
+## Limit types
+
+| Value | Quantity |
+| --- | --- |
+| `monthly` | How many uses, or credits, each month |
+| `total` | How many uses, or credits, in total. For a database record, how many a user can have at once. |
+| `unlimited` | `null` |
+
+## Feature pitches
+
+A feature's `pitch` completes a sentence that starts with the feature's name:
+
+| Type | Sentence | Example |
+| --- | --- | --- |
+| `skill` or `tool` | `The {mid_sentence_name} {type} {pitch}.` | The quick brainstorm skill generates a short list of fresh ideas on any topic. |
+| `database_record` | `{display_name} {pitch}.` | Saved topics keep the topics you want to come back to. |

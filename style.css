@@ -1,0 +1,35 @@
+/* The logo matches the plugpass.ai header's wordmark: 36px tall, 36px from the
+   left edge at desktop widths (24px below 1024px), centered in a 64px bar. */
+
+/* Desktop sidebar: 28px sidebar padding + 4px image padding + 4px margin = 36px
+   from the left; 24px sidebar padding - 10px = 14px from the top. */
+#sidebar img.nav-logo {
+  height: 36px !important;
+  margin-left: 4px;
+  margin-top: -10px;
+}
+
+/* Mobile navbar (a 64px bar): 16px bar padding + 8px margin = 24px. */
+#navbar img.nav-logo {
+  height: 36px !important;
+  margin-left: 8px;
+}
+
+/* No section name above the page title. */
+#header .eyebrow {
+  display: none;
+}
+
+#header .eyebrow + * {
+  margin-top: 0;
+}
+
+/* Inline code takes the app's Code tag background: a 5% jet wash in light mode
+   (bg-jet/5), a 15% white wash in dark mode (dark:bg-white/15). */
+html code:not(pre *) {
+  background-color: rgb(9 9 11 / 5%);
+}
+
+html.dark code:not(pre *) {
+  background-color: rgb(255 255 255 / 15%);
+}
