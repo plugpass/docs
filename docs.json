@@ -31,6 +31,12 @@
   "navigation": {
     "groups": [
       {
+        "group": "Custom domains",
+        "pages": [
+          "changing-your-domain"
+        ]
+      },
+      {
         "group": "Pricing page",
         "pages": [
           "plan-data"

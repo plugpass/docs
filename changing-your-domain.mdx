@@ -1,0 +1,235 @@
+---
+title: "Changing your domain"
+description: "How to move your plugin to a new custom domain without breaking existing installs."
+---
+
+When you change your plugin's custom domain, Plugpass moves your pages to the new one and stops serving the old one. Anything still pointing at the old address stops working unless you set it up to redirect.
+
+## Redirect the old domain
+
+As with any site that moves, a redirect keeps search results, shared links and bookmarks working.
+
+Your plugin's signup and login links are baked into each installed copy. Until users update to a version you published after the move, those links point at your old domain.
+
+<Steps>
+  <Step title="Send every path to the same path">
+    A permanent redirect (`301`) from the old hostname to the new one, mapping every path to the same path. Not just the homepage.
+  </Step>
+
+  <Step title="Keep the query string">
+    The signup links look like `/signup?feature=…&connect=web&platform=anthropic`. Those parameters route a user to the connection step after they sign up. Drop them and they land on a page that never tells them how to connect.
+  </Step>
+</Steps>
+
+### How
+
+You do not need a server for this. Most DNS and hosting providers can do it for you.
+
+**Cloudflare**
+
+Point the old hostname at a proxied placeholder record. Add a Redirect Rule for it that targets your new domain with the path appended, and turn on **Preserve query string**.
+
+**Netlify**
+
+{/* TODO(copy): Netlify and Vercel split out, since the old rule was Netlify syntax only. */}
+Add a rule to your `_redirects` file, such as `/* https://new.example.com/:splat 301!`.
+
+**Vercel**
+
+Add a redirect to your `vercel.json`.
+
+```json
+{
+  "redirects": [
+    { "source": "/:path*", "destination": "https://new.example.com/:path*", "statusCode": 301 }
+  ]
+}
+```
+
+**nginx**
+
+If you already run one, this keeps both the path and the query string.
+
+```nginx
+server {
+  server_name old.example.com;
+  return 301 https://new.example.com$request_uri;
+}
+```
+
+<Warning>
+  **Registrar "domain forwarding" often is not enough.** Many implementations send every request to the homepage, and many drop the query string. Both look like the redirect is working.
+</Warning>
+
+### Check that the redirect works
+
+Test with an old signup URL that still has its parameters.
+
+```
+https://old.example.com/signup?feature=test&connect=web&platform=anthropic
+```
+
+You should land on `https://new.example.com/signup` with `feature`, `connect` and `platform` all still in the address bar. If the path or the parameters are gone, the redirect is not configured the way the links need.
+
+## If Plugpass hosts your MCP server
+
+### Which one are you?
+
+{/* TODO(copy): points server movers at the new section. */}
+If your plugin offers MCP tools of its own, you run your own MCP server, and the redirect above is all a domain change needs. If that server is moving to a new URL too, see [If you move your own MCP server](#if-you-move-your-own-mcp-server).
+
+If the only tool your plugin exposes is the access check (`yourplugin_check_access`), Plugpass hosts your MCP server and the rest of this section applies.
+
+### Why a redirect is not enough
+
+Your connector URL is `https://yourdomain.com/mcp`, and it moves with your domain. Installed copies keep calling the old one. Tokens they hold stay valid there, so proxying those calls to the new domain is all it takes.
+
+### Carve the MCP paths out of the redirect
+
+Proxy these two paths to your new domain instead of redirecting them.
+
+```
+/mcp
+/.well-known/oauth-protected-resource/mcp
+```
+
+Everything else keeps the redirect from the first section.
+
+{/* TODO(copy): proxy requirements, new. */}
+Your proxy must connect to the new domain under the new domain's name and pass the `Authorization` header through. It must also send your old domain in an `X-Forwarded-Host` header, which is how installed copies keep recognizing the connector.
+
+<Warning>
+  {/* TODO(copy): what a blanket redirect actually does, corrected. */}
+  **Do not redirect `/mcp`.** An installed copy only accepts the connector at the address it connected to, so a redirect to your new domain makes it refuse the connection. The redirect resolves cleanly and looks like it worked.
+</Warning>
+
+**Cloudflare**
+
+{/* TODO(copy): Worker recipe, new. */}
+One Worker on the old domain can do both jobs. Remove the Redirect Rule, create a Worker with this code, and add a route for `old.example.com/*` to it.
+
+```js
+export default {
+  async fetch(request) {
+    const url = new URL(request.url);
+    const target = `https://new.example.com${url.pathname}${url.search}`;
+    if (url.pathname === '/mcp' || url.pathname === '/.well-known/oauth-protected-resource/mcp') {
+      const proxied = new Request(target, request);
+      proxied.headers.set('X-Forwarded-Host', url.host);
+      return fetch(proxied);
+    }
+    return Response.redirect(target, 301);
+  },
+};
+```
+
+**nginx**
+
+{/* TODO(copy): label and closing line, reworded. */}
+Any other proxy that can route by path works the same way.
+
+```nginx
+server {
+  server_name old.example.com;
+
+  location = /mcp {
+    proxy_pass https://new.example.com;
+    proxy_ssl_server_name on;
+    proxy_set_header Authorization $http_authorization;
+    proxy_set_header X-Forwarded-Host $host;
+  }
+
+  location = /.well-known/oauth-protected-resource/mcp {
+    proxy_pass https://new.example.com;
+    proxy_ssl_server_name on;
+    proxy_set_header Authorization $http_authorization;
+    proxy_set_header X-Forwarded-Host $host;
+  }
+
+  location / {
+    return 301 https://new.example.com$request_uri;
+  }
+}
+```
+
+### Check it against your live plugin
+
+Use a premium feature from a copy that is already installed and connected. If it runs, the proxy is working.
+
+### Retiring the old address for good
+
+Keep this setup in place while outdated installs are still in use.
+
+To give it up, remove the domain on the **Domains** page in your publisher settings. Anyone still calling it loses access, so do this last.
+
+<Warning>
+  Keep the domain registered while you still want it working. If you let it lapse and someone else acquires it, the tokens your users send to that address go to them.
+</Warning>
+
+## If you move your own MCP server
+
+{/* TODO(copy): server-move section, new. */}
+This applies when an MCP server you run moves to a new URL, whether or not your domain changes.
+
+Installed copies keep calling the old URL until users update to a version you released after the move. Plugpass keeps accepting the tokens they hold for it, so all the old URL needs is something answering there.
+
+### Keep the old server running
+
+The simplest way is to leave it up. Don't take the old server down when the new one goes live.
+
+### Or point the old address at the new server
+
+One deployment can answer both addresses. Deploy the new server with the code from `/plugpass-implement-code-changes` first: it accepts tokens for your old URL, and code from before the move does not.
+
+Then serve the old hostname from the same deployment, such as a second custom domain on your host, or proxy it to the new server. A proxy must connect to the new server under the new server's name, pass the `Authorization` header through, and send your old hostname in an `X-Forwarded-Host` header.
+
+<Warning>
+  **Do not redirect your old MCP URL.** An installed copy only accepts the server at the address it connected to, so a redirect makes it refuse the connection.
+</Warning>
+
+**Cloudflare**
+
+Create a Worker with this code and add a route for `mcp.old-example.com/*` to it. The old hostname's DNS record must be proxied through Cloudflare for the route to receive its traffic.
+
+```js
+export default {
+  async fetch(request) {
+    const url = new URL(request.url);
+    const proxied = new Request(`https://mcp.new-example.com${url.pathname}${url.search}`, request);
+    proxied.headers.set('X-Forwarded-Host', url.host);
+    return fetch(proxied);
+  },
+};
+```
+
+**nginx**
+
+```nginx
+server {
+  server_name mcp.old-example.com;
+
+  location / {
+    proxy_pass https://mcp.new-example.com;
+    proxy_ssl_server_name on;
+    proxy_set_header Authorization $http_authorization;
+    proxy_set_header X-Forwarded-Host $host;
+  }
+}
+```
+
+### Check the old address
+
+From a copy installed before the move, use a premium feature. If it runs, the old address is working.
+
+### Retiring the old URL for good
+
+Keep the old address answering while outdated installs are still in use.
+
+To give it up, remove its domain on the **Domains** page in your publisher settings. Plugpass then stops accepting tokens for it, so do this last.
+
+## After the move
+
+{/* TODO(copy): now covers a server move too. */}
+Changing your domain or moving your MCP server requires implementation of the monetization code in your plugin & MCP server. Run `/plugpass-implement-code-changes` in Claude Code or `$plugpass-implement-code-changes` in Codex, then publish and release the updated plugin.
+
+New installs will carry the new address, and existing outdated installs will keep working through your redirect until they get the new version.
