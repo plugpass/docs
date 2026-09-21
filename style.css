@@ -83,3 +83,97 @@ html code:not(pre *) {
 html.dark code:not(pre *) {
   background-color: rgb(255 255 255 / 15%);
 }
+
+/* Tailwind's text-pretty, as the app uses it, on every text element: no
+   paragraph, list item or heading ends on a lone word. Mintlify renders a
+   markdown paragraph as `<span data-as="p">` rather than `<p>`, so both are
+   listed. Plain element selectors on purpose, so any Mintlify utility class
+   (text-nowrap included) still wins where it is set. Browsers without support
+   wrap normally. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span[data-as='p'],
+li,
+dt,
+dd,
+td,
+th,
+blockquote,
+figcaption {
+  text-wrap: pretty;
+}
+
+/* A tighter reading rhythm than Mintlify's defaults: paragraphs closer
+   together, headings pulled close to the text they introduce, and more room
+   above a heading the higher its level. At 16px body text that is 16px
+   between paragraphs, the same 16px below every heading, and 40 / 32 / 24px
+   above h2 / h3 / h4.
+   The bold provider labels are plain paragraphs, so they take paragraph
+   spacing. The heading rules outrank Mintlify's zero-specificity `:where()`
+   rules, and the not-prose exclusion mirrors theirs so opted-out components
+   stay out. */
+/* Mintlify renders a markdown paragraph as `<span data-as="p">`, not `<p>`,
+   and spaces it with an ID-scoped rule. This mirrors both variants of that
+   selector with one more element, so it wins whatever the load order. Their
+   first-child and last-child rules still outrank it, so the edges stay flush.
+   `data-as` is undocumented: if Mintlify changes it, this stops matching and
+   paragraphs fall back to their default spacing. */
+html #content-area div.mdx-content.prose > span[data-as='p'],
+html #content-area div.mdx-content .prose > span[data-as='p'] {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.prose h2:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.prose h3:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose h4:not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Whatever directly follows a heading sits at the heading's 16px, whatever
+   its own top margin, since adjacent margins collapse to the larger. */
+.prose :is(h2, h3, h4) + * {
+  margin-top: 0;
+}
+
+/* The final item in a list takes no bottom padding, so a list ends where its
+   last item does. Mintlify's Steps pads every step for the line connecting it
+   to the next, the last one included. Scoped to the content area so the
+   sidebar and navbar keep their own spacing. */
+#content-area [role='list'] > [role='listitem']:last-child,
+#content-area li:last-child {
+  padding-bottom: 0;
+}
+
+/* A divider closing the page header (title and description), 20px under the
+   description, with the body's own 32px top margin below it. The description
+   and the first paragraph are both gray prose, two pixels apart in size, so
+   without it they read as one block. Mintlify's themed gray-200 in light
+   mode. */
+#header {
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid rgb(var(--gray-200));
+}
+
+/* The description sits 16px under the title (Mintlify's mt-2 is 8px). */
+#header > .prose {
+  margin-top: 1rem;
+}
+
+html.dark #header {
+  border-bottom-color: rgb(255 255 255 / 15%);
+}
