@@ -71,12 +71,19 @@ https://old.example.com/signup?feature=test&connect=web&platform=anthropic
 
 You should land on `https://new.example.com/signup` with `feature`, `connect` and `platform` all still in the address bar. If the path or the parameters are gone, the redirect is not configured the way the links need.
 
+## Implement required plugin changes
+
+{/* TODO(copy): now covers a server move too. */}
+Changing your domain or moving your MCP server requires implementation of the monetization code in your plugin & MCP server. Run `/plugpass-implement-code-changes` in Claude Code or `$plugpass-implement-code-changes` in Codex, then publish and release the updated plugin.
+
+New installs will carry the new address, and existing outdated installs will keep working through the old address until they get the new version.
+
 ## If Plugpass hosts your MCP server
 
 ### Which one are you?
 
 {/* TODO(copy): points server movers at the new section. */}
-If your plugin offers MCP tools of its own, you run your own MCP server, and the redirect above is all a domain change needs. If that server is moving to a new URL too, see [If you move your own MCP server](#if-you-move-your-own-mcp-server).
+If your plugin offers MCP tools of its own, you run your own MCP server, and the two steps above are all a domain change needs. If that server is moving to a new URL too, see [If you move your own MCP server](#if-you-move-your-own-mcp-server).
 
 If the only tool your plugin exposes is the access check (`yourplugin_check_access`), Plugpass hosts your MCP server and the rest of this section applies.
 
@@ -226,10 +233,3 @@ From a copy installed before the move, use a premium feature. If it runs, the ol
 Keep the old address answering while outdated installs are still in use.
 
 To give it up, remove its domain on the **Domains** page in your publisher settings. Plugpass then stops accepting tokens for it, so do this last.
-
-## After the move
-
-{/* TODO(copy): now covers a server move too. */}
-Changing your domain or moving your MCP server requires implementation of the monetization code in your plugin & MCP server. Run `/plugpass-implement-code-changes` in Claude Code or `$plugpass-implement-code-changes` in Codex, then publish and release the updated plugin.
-
-New installs will carry the new address, and existing outdated installs will keep working through your redirect until they get the new version.
