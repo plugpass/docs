@@ -1,0 +1,46 @@
+---
+title: "Subscriptions you create in Stripe"
+description: "Start a subscription for a user in your own Stripe dashboard, and it works like one they bought from your pricing page."
+---
+
+{/* TODO(copy): the whole page, new (drafted), and its "Billing" navigation group. */}
+
+You can start a subscription for one of your users in your own Stripe dashboard, for example to send them an invoice or to give them a trial. Once its first invoice is paid, it works like a subscription they bought from your pricing page: they get the plan, and they manage it from your plugin's billing page.
+
+## Set it up
+
+<Steps>
+  <Step title="Have the user sign up">
+    The user signs up for your plugin first, on your plugin's own sign-up page.
+  </Step>
+
+  <Step title="Create the subscription in Stripe">
+    Create the subscription for the user's customer in Stripe, or for a new customer with the email address they signed up with. Use one of your plugin's current prices, monthly or annual. Add any trial, coupon, or payment terms you like.
+  </Step>
+
+  <Step title="The first invoice is paid">
+    When the subscription's first invoice is paid, it becomes one of your plugin's subscriptions. The user gets the plan right away, and they can see and change it on your plugin's billing page like any other subscription.
+  </Step>
+</Steps>
+
+Plugpass takes its platform fee from the subscription's second invoice on.
+
+When Plugpass takes the subscription over, its history in Stripe shows it briefly set to cancel and then resumed, with any cancellation you scheduled put back as it was. From then on it charges the customer's default card, which the user can change on your plugin's billing page. If you chose a card for the subscription and the customer had no default card, that card becomes their default.
+
+## When a subscription isn't picked up
+
+A subscription stays in Stripe only, and gives the user nothing in your plugin, when:
+
+- The customer's email address doesn't match anyone who has signed up for your plugins.
+- The user already has a subscription to the plugin. Change that subscription instead.
+- It isn't on one of the plugin's prices, or it has more than one price on it.
+- It's on a subscription schedule, as it is when you add phases to it.
+- The plugin is suspended.
+
+It keeps billing in Stripe either way, so cancel it there if it shouldn't. A subscription on a trial is picked up when its first invoice is paid, even at $0, and one you invoice is picked up when the user pays it.
+
+## Change a subscription in Stripe
+
+You can change any of your plugin's subscriptions in Stripe, whether you created it there or the user bought it from your pricing page. You can cancel it now or at the end of its period, reset its billing cycle, add a coupon, pause payment collection, or extend a trial.
+
+A plan change reaches your plugin when the next invoice is paid. If the change invoices right away, the user moves to the new plan right away. If you leave the proration for the next renewal, they move at renewal.

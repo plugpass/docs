@@ -47,6 +47,12 @@
         "pages": [
           "user-sync-webhook"
         ]
+      },
+      {
+        "group": "Billing",
+        "pages": [
+          "subscriptions-in-stripe"
+        ]
       }
     ]
   },
