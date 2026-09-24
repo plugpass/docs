@@ -41,6 +41,12 @@
         "pages": [
           "plan-data"
         ]
+      },
+      {
+        "group": "Integrations",
+        "pages": [
+          "user-sync-webhook"
+        ]
       }
     ]
   },

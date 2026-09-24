@@ -1,0 +1,205 @@
+---
+title: "User sync webhook"
+description: "Send your users to your own tools as they sign up, change, and leave."
+---
+
+{/* TODO(copy): the whole page, new (drafted). */}
+
+The user sync webhook sends a request to your server each time one of your users signs up, changes, or deletes their account. Use it to keep your email service, CRM, or database in step with your users.
+
+Set it up for each plugin on the plugin's **Integrations** page, under **User sync**. A plugin's webhook receives the people who use that plugin, along with every plugin of yours they use.
+
+## Your endpoint
+
+- Accept `POST` requests with a JSON body, at an `https` URL on a public address.
+- Verify each request's signature before you trust it. See [Verify each request](#verify-each-request).
+- Respond with a `2xx` status within 10 seconds. Redirects aren't followed, so enter the URL your endpoint is served at.
+
+While you set it up, **Send test event** posts a sample contact to your endpoint so you can check it before you save.
+
+## When requests are sent
+
+| Event | Sent when |
+| --- | --- |
+| `contact.created` | Someone signs up for the first of your plugins they use. |
+| `contact.updated` | Anything the contact carries changes. See the list below. |
+| `contact.deleted` | They delete their account with you, or you delete them on the **Users** page of your publisher settings. |
+| `contact.test` | You click **Send test event**. It carries a sample contact, so don't store it. |
+
+A `contact.updated` is sent when:
+
+- They change their name or email address.
+- They sign up for another of your plugins, or delete their account on one of your plugins but keep another. The plugin they left gets the update too.
+- Their plan or its status changes: they subscribe, switch plans, a payment fails or later succeeds, or their subscription ends.
+- You rename a plugin they use, rename their plan, or change your free plan.
+- You delete a plugin they use. Your other plugins' webhooks get the update, and the deleted plugin's webhook stops receiving requests.
+
+Renewals send nothing. Neither does a cancellation, until the subscription actually ends.
+
+### Handle created and updated the same way
+
+Create the contact if you don't have it, and update it if you do. A webhook can receive `contact.updated` for someone it hasn't seen before, such as a user of another of your plugins who signs up for this one.
+
+People who signed up before you connected your webhook are sent the next time something about them changes.
+
+Someone who deletes their account and signs up again comes back as a new contact, with a new `subject`.
+
+### Retries and order
+
+If your endpoint doesn't respond with a `2xx`, the request is retried a minute later, then again with the wait doubling each time, up to 12 hours between tries. After 10 retries, about 17 hours in all, it's dropped.
+
+Requests can arrive out of order, and occasionally more than once. Each one carries the contact as it is when the request is sent, not as it was when the change happened, so a retry never sends outdated details. Use the `webhook-id` header to skip a request you've already handled.
+
+## Request body
+
+```json contact.updated
+{
+  "type": "contact.updated",
+  "timestamp": "2026-09-24T17:03:12.482Z",
+  "data": {
+    "subject": "Xq3Lm9TzR8vKp2WdN6aYc4HbJ7sEf1Gu",
+    "email": "ada@example.com",
+    "name": "Ada Lovelace",
+    "plugins": [
+      {
+        "plugpass_id": "k3v9x2ma",
+        "name": "Cool Plugin",
+        "plan": "Pro",
+        "status": "active"
+      },
+      {
+        "plugpass_id": "p7c2d8rf",
+        "name": "Other Plugin",
+        "plan": "Free",
+        "status": "active"
+      }
+    ]
+  }
+}
+```
+
+A `contact.deleted` carries only who to delete:
+
+```json contact.deleted
+{
+  "type": "contact.deleted",
+  "timestamp": "2026-09-24T17:03:12.482Z",
+  "data": {
+    "subject": "Xq3Lm9TzR8vKp2WdN6aYc4HbJ7sEf1Gu",
+    "email": "ada@example.com"
+  }
+}
+```
+
+## Fields
+
+<ResponseField name="type" type="string">
+  `contact.created`, `contact.updated`, `contact.deleted`, or `contact.test`.
+</ResponseField>
+
+<ResponseField name="timestamp" type="string">
+  When the change happened, in ISO 8601.
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  The contact.
+
+  <Expandable title="properties" defaultOpen>
+    <ResponseField name="subject" type="string">
+      The person's ID, the same one your analytics tools receive for them. Their email address can change and their ID can't, so use it to find their contact.
+    </ResponseField>
+
+    <ResponseField name="email" type="string">
+      Their email address.
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      Their name, or an empty string if they haven't given one. Not in a `contact.deleted`.
+    </ResponseField>
+
+    <ResponseField name="plugins" type="object[]">
+      Your plugins they have an account on. Not in a `contact.deleted`.
+
+      <Expandable title="properties" defaultOpen>
+        <ResponseField name="plugpass_id" type="string">
+          The plugin's ID, the `metadata.plugpass-plugin-id` in your `plugin.json`. It never changes.
+        </ResponseField>
+
+        <ResponseField name="name" type="string">
+          The plugin's name. It changes when you rename the plugin.
+        </ResponseField>
+
+        <ResponseField name="plan" type="string | null">
+          The name of their plan: the one they pay for, or your free plan if they don't pay. `null` when the plugin has no free plan and they have no subscription.
+        </ResponseField>
+
+        <ResponseField name="status" type="string | null">
+          Their subscription's status: `active`, `trialing`, `past_due`, `incomplete`, or `paused`. On your free plan it's `active`, and it's `null` when `plan` is.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+## Verify each request
+
+Every request is signed following [Standard Webhooks](https://www.standardwebhooks.com), so you can verify it with their library for your language. Verify the raw request body, before you parse it.
+
+| Header | What it holds |
+| --- | --- |
+| `webhook-id` | The request's ID. It stays the same when the request is retried. |
+| `webhook-timestamp` | When the request was sent, in Unix seconds. The libraries refuse a request more than 5 minutes old. |
+| `webhook-signature` | The signature. For 24 hours after you regenerate your secret, there are two, separated by a space. |
+
+<CodeGroup>
+
+```js Node.js
+import express from 'express';
+import { Webhook } from 'standardwebhooks';
+
+const webhook = new Webhook(process.env.PLUGPASS_WEBHOOK_SECRET);
+const app = express();
+
+app.post('/webhooks/plugpass', express.raw({ type: 'application/json' }), (req, res) => {
+  let event;
+  try {
+    event = webhook.verify(req.body, req.headers);
+  } catch {
+    return res.sendStatus(400);
+  }
+  // Handle event.type and event.data here.
+  res.sendStatus(204);
+});
+
+app.listen(8080);
+```
+
+```python Python
+import os
+
+from flask import Flask, request
+from standardwebhooks.webhooks import Webhook, WebhookVerificationError
+
+webhook = Webhook(os.environ["PLUGPASS_WEBHOOK_SECRET"])
+app = Flask(__name__)
+
+
+@app.post("/webhooks/plugpass")
+def plugpass_webhook():
+    try:
+        event = webhook.verify(request.get_data(), dict(request.headers))
+    except WebhookVerificationError:
+        return "", 400
+    # Handle event["type"] and event["data"] here.
+    return "", 204
+```
+
+</CodeGroup>
+
+For other languages, see the [Standard Webhooks libraries](https://github.com/standard-webhooks/standard-webhooks/tree/main/libraries).
+
+## Regenerate your secret
+
+Your signing secret is shown once, when you set up the webhook. To get a new one, click **Edit** on the webhook, then **Regenerate secret**.
+
+For 24 hours after you regenerate it, every request is signed with both the new secret and the old one, and a request verifies when either matches. Update your endpoint with the new secret within that time.
