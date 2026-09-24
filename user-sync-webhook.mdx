@@ -33,22 +33,33 @@ A `contact.updated` is sent when:
 - Their plan or its status changes: they subscribe, switch plans, a payment fails or later succeeds, or their subscription ends.
 - You rename a plugin they use, rename their plan, or change your free plan.
 - You delete a plugin they use. Your other plugins' webhooks get the update, and the deleted plugin's webhook stops receiving requests.
+- You send all your users. See [Send your existing users](#send-your-existing-users).
 
 Renewals send nothing. Neither does a cancellation, until the subscription actually ends.
+
+A change that reaches many people at once, like renaming a plugin or sending all your users, arrives at about 5 requests a second, so it doesn't overwhelm your endpoint or the tools behind it.
 
 ### Handle created and updated the same way
 
 Create the contact if you don't have it, and update it if you do. A webhook can receive `contact.updated` for someone it hasn't seen before, such as a user of another of your plugins who signs up for this one.
 
-People who signed up before you connected your webhook are sent the next time something about them changes.
-
-Someone who deletes their account and signs up again comes back as a new contact, with a new `subject`.
+Someone who deletes their account and signs up again comes back as a new contact, with a new `user_id`.
 
 ### Retries and order
 
-If your endpoint doesn't respond with a `2xx`, the request is retried a minute later, then again with the wait doubling each time, up to 12 hours between tries. After 10 retries, about 17 hours in all, it's dropped.
+If your endpoint doesn't respond with a `2xx`, the request is retried a minute later, then again with the wait doubling each time, up to 12 hours between tries. After 10 retries, about 17 hours in all, it's dropped. To catch up after a longer outage, [send all your users](#send-your-existing-users) again.
 
 Requests can arrive out of order, and occasionally more than once. Each one carries the contact as it is when the request is sent, not as it was when the change happened, so a retry never sends outdated details. Use the `webhook-id` header to skip a request you've already handled.
+
+## Send your existing users
+
+Your webhook gets people as they sign up or change. To send everyone who already uses the plugin, click **Send all users**: you're offered it when you save a new webhook, and it's in the webhook's **Edit** after that.
+
+Each person arrives once, as a `contact.updated`, so sending everyone again updates the contacts you already have rather than adding new ones.
+
+<Warning>
+  If your endpoint starts something for new contacts, like a welcome email, your existing users will get it too. Turn it off first if that's not what you want.
+</Warning>
 
 ## Request body
 
@@ -57,7 +68,7 @@ Requests can arrive out of order, and occasionally more than once. Each one carr
   "type": "contact.updated",
   "timestamp": "2026-09-24T17:03:12.482Z",
   "data": {
-    "subject": "Xq3Lm9TzR8vKp2WdN6aYc4HbJ7sEf1Gu",
+    "user_id": "Xq3Lm9TzR8vKp2WdN6aYc4HbJ7sEf1Gu",
     "email": "ada@example.com",
     "name": "Ada Lovelace",
     "plugins": [
@@ -85,7 +96,7 @@ A `contact.deleted` carries only who to delete:
   "type": "contact.deleted",
   "timestamp": "2026-09-24T17:03:12.482Z",
   "data": {
-    "subject": "Xq3Lm9TzR8vKp2WdN6aYc4HbJ7sEf1Gu",
+    "user_id": "Xq3Lm9TzR8vKp2WdN6aYc4HbJ7sEf1Gu",
     "email": "ada@example.com"
   }
 }
@@ -105,8 +116,8 @@ A `contact.deleted` carries only who to delete:
   The contact.
 
   <Expandable title="properties" defaultOpen>
-    <ResponseField name="subject" type="string">
-      The person's ID, the same one your analytics tools receive for them. Their email address can change and their ID can't, so use it to find their contact.
+    <ResponseField name="user_id" type="string">
+      The person's user ID, the same one Plugpass gives your analytics tools and your MCP server for them. Their email address can change and their user ID can't, so use it to find their contact.
     </ResponseField>
 
     <ResponseField name="email" type="string">
