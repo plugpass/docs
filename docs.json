@@ -49,6 +49,12 @@
         ]
       },
       {
+        "group": "Testing",
+        "pages": [
+          "test-users"
+        ]
+      },
+      {
         "group": "Billing",
         "pages": [
           "subscriptions-in-stripe"

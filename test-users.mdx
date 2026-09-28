@@ -1,0 +1,38 @@
+---
+title: "Test users"
+description: "Try your plugin as a user would, before you publish and before every change, without paying."
+---
+
+{/* TODO(copy): the whole page, new (drafted). */}
+
+A test user is an account with you that you designate by email on a plugin's **Test** page. It sees the version you choose, its purchases are simulated, and its usage counts for nothing. Use one to try sign-up, premium features, upgrades, and billing changes exactly as a user would.
+
+A plugin's sidebar ends with the **Release** section: **Implementation**, **Test**, and **Publish plugin**. Test opens once the implementation step is complete, and a test user's **Test as user** turns on once the version it tests is ready: the current draft, or the production version.
+
+## Setting up a test user
+
+On the Test page, click **Add test user**, enter an email, and choose:
+
+- **Version**: the current draft or production. The draft is the default. Before you publish, only the draft exists; after, a publish or a new edit moves the test user automatically.
+- **Starting state**: not signed up, signed up (when the plugin offers no free plan), or a plan and term. The test user is put into it when you add them and every time you reset them.
+- **Saved payment method**: whether a card is on file. It defaults to on for a paid starting plan.
+
+Adding an email that already has an account with you converts that account into a test user. An account with a live subscription can't be converted; cancel it first.
+
+## Testing
+
+Click **Test as user** on the row. It opens the plugin's pages in a new tab, signed in as the test user, with a bar across the top naming the version being shown and an **End test session** link that returns the browser to a visitor's view. Everything works as it would for a real user: sign-up, the account page, checkout, and billing. Payments are simulated, so **Pay now (Test)** completes without a card being charged.
+
+Before you publish, the plugin's pages are only reachable from a browser opened this way; anyone else sees a not-found page.
+
+To test the plugin's premium features in an AI product, run the `plugpass-test-plugin` skill from your plugin's directory in Claude Code or Codex. For a test user on the current draft it installs your working copy as a test version on the AI product you choose; a test user on production uses the published plugin, so the real install is what you test. Either way it opens a link that puts your browser into test mode for the test user you pick. Sign in as that test user when the plugin asks you to connect. The `plugpass-implement-code-changes` skill offers to run it for you when it finishes.
+
+## Resetting
+
+**Reset** returns the test user to the starting state: the subscription, the usage counters, and the account state for the plugin are cleared and the starting status is applied again. It's disabled while the test user is already in it. Reset never touches your AI product's connection to the plugin; to test a first install, disconnect or remove the connector there first.
+
+**Remove** clears the same state and deletes the test user. The email becomes an ordinary visitor's again.
+
+## What test users don't affect
+
+Test users are left out of your analytics, your users list (unless you show them), your user sync webhook, and your usage reports. Their simulated subscriptions never reach Stripe.
