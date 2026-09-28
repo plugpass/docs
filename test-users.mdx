@@ -27,6 +27,12 @@ Before you publish, the plugin's pages are only reachable from a browser opened 
 
 To test the plugin's premium features in an AI product, run the `plugpass-test-plugin` skill from your plugin's directory in Claude Code or Codex. For a test user on the current draft it installs your working copy as a test version on the AI product you choose; a test user on production uses the published plugin, so the real install is what you test. Either way it opens a link that puts your browser into test mode for the test user you pick. Sign in as that test user when the plugin asks you to connect. The `plugpass-implement-code-changes` skill offers to run it for you when it finishes.
 
+{/* TODO(copy): the publisher-hosted server note (drafted). */}
+
+If your plugin runs its own MCP server, the test version connects to that server's **test path**, the same server at its URL plus `/test`. The test path always asks users to sign in and only admits your test users, so you can test sign-up, paywalls, and upgrades against your unpublished changes as soon as the server is deployed, before you publish. Read [Your own MCP server](/your-mcp-server) for how the two paths behave.
+
+While a test user on the draft is signed in, the plugin's install page offers **Instructions for test mode** alongside the instructions real users see, and the connect page names the test path where your connector is one of your own.
+
 ## Resetting
 
 **Reset** returns the test user to the starting state: the subscription, the usage counters, and the account state for the plugin are cleared and the starting status is applied again. It's disabled while the test user is already in it. Reset never touches your AI product's connection to the plugin; to test a first install, disconnect or remove the connector there first.

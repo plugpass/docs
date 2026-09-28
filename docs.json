@@ -51,7 +51,8 @@
       {
         "group": "Testing",
         "pages": [
-          "test-users"
+          "test-users",
+          "your-mcp-server"
         ]
       },
       {

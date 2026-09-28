@@ -1,0 +1,27 @@
+---
+title: "Your own MCP server"
+description: "How a plugin's own MCP server enforces access: the canonical path that turns on when you publish, and the test path your test users use."
+---
+
+{/* TODO(copy): the whole page, new (drafted). */}
+
+When your plugin runs its own MCP server, the `plugpass-implement-code-changes` skill writes the access layer into the server's source: it validates the sign-in tokens Plugpass issues, asks Plugpass whether a user may use a premium feature, and answers with the paywall when they may not. That layer serves two paths.
+
+## The canonical path
+
+Your server's registered URL, usually ending in `/mcp`, is what real users connect to. It enforces access only once your plugin is **published**:
+
+- **Before your first publish**, the canonical path behaves as your server did before Plugpass. Nobody is asked to sign in, no premium check runs, and every tool works for anyone. You can deploy the implemented code at any time without changing anything for the users you have today.
+- **After you publish**, the canonical path asks users to sign in and enforces your plans. Enforcement begins within five minutes of publishing.
+
+The server learns whether the plugin is published from Plugpass and keeps the answer for five minutes. Publishing is the only thing that turns enforcement on; deploying never does. If the server cannot reach Plugpass when it starts, it enforces until it can, so an outage never opens a published server.
+
+## The test path
+
+The same server at its URL plus `/test` (for example `https://mcp.example.com/mcp/test`) always asks users to sign in, from the first deploy, and only your [test users](/test-users) can sign in to it. It runs the same tools and the same access checks as the canonical path, against your current draft, so what you test is the code you will ship.
+
+The `plugpass-test-plugin` skill installs a test version of your plugin that points at the test path. On Claude and ChatGPT, where a connector is added by URL, the connect page shows the test path to a test user on the draft; add it as a connector, turn the real connector off while you test since the two carry the same tool names, and remove the test connector when you are done.
+
+## Deploy, then test, then publish
+
+The order is up to you. Deploy your server whenever you like: real users see no change until you publish. Test against the test path, then publish when you are ready. If you deploy from the `plugpass-implement-code-changes` skill's closing prompt, the publish page marks that server's deploy task done for you.
