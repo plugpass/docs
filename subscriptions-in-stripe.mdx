@@ -15,7 +15,7 @@ You can start a subscription for one of your users in your own Stripe dashboard,
   </Step>
 
   <Step title="Create the subscription in Stripe">
-    Create the subscription for the user's customer in Stripe, or for a new customer with the email address they signed up with. Use one of your plugin's current prices, monthly or annual. Add any trial, coupon, or payment terms you like.
+    Create the subscription for the user's customer in Stripe, or for a new customer with the email address they signed up with. Use one of your plugin's current prices, monthly or annual. A plan sold at several credit amounts is a product per amount, named for the plan and its credits, like Pro 2000. Add any trial, coupon, or payment terms you like.
   </Step>
 
   <Step title="The first invoice is paid">
@@ -43,4 +43,4 @@ It keeps billing in Stripe either way, so cancel it there if it shouldn't. A sub
 
 You can change any of your plugin's subscriptions in Stripe, whether you created it there or the user bought it from your pricing page. You can cancel it now or at the end of its period, reset its billing cycle, add a coupon, pause payment collection, or extend a trial.
 
-A plan change reaches your plugin when the next invoice is paid. If the change invoices right away, the user moves to the new plan right away. If you leave the proration for the next renewal, they move at renewal.
+A plan change reaches your plugin when the next invoice is paid. If the change invoices right away, the user moves to the new plan right away. If you leave the proration for the next renewal, they move at renewal. A change you make in Stripe uses Stripe's own proration; only an upgrade made through your plugin's checkout also accounts for credits already used this month.
