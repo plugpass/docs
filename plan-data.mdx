@@ -55,7 +55,19 @@ The plan data for a plugin with a free plan and a Pro plan sold at two credit am
           "limit_type": "monthly",
           "quantity": 10,
           "credit_cost": null,
-          "pitch": "generates a short list of fresh ideas on any topic"
+          "pitch": "generates a short list of fresh ideas on any topic",
+          "inherited": false
+        },
+        {
+          "id": "ent_Vd2pLw8R",
+          "type": "tool",
+          "display_name": "Topic ideas",
+          "mid_sentence_name": "topic ideas",
+          "limit_type": "unlimited",
+          "quantity": null,
+          "credit_cost": null,
+          "pitch": "suggests topics to start a brainstorm with",
+          "inherited": false
         },
         {
           "id": "ent_Hn6cYs3J",
@@ -65,7 +77,8 @@ The plan data for a plugin with a free plan and a Pro plan sold at two credit am
           "limit_type": "total",
           "quantity": 3,
           "credit_cost": null,
-          "pitch": "keep the topics you want to come back to"
+          "pitch": "keep the topics you want to come back to",
+          "inherited": false
         }
       ]
     },
@@ -90,7 +103,8 @@ The plan data for a plugin with a free plan and a Pro plan sold at two credit am
       ],
       "credits": {
         "limit_type": "monthly",
-        "quantity": 500
+        "quantity": 500,
+        "inherited": false
       },
       "credit_tiers": [
         {
@@ -145,7 +159,8 @@ The plan data for a plugin with a free plan and a Pro plan sold at two credit am
           "limit_type": "credits",
           "quantity": null,
           "credit_cost": 5,
-          "pitch": "runs a structured session on one topic"
+          "pitch": "runs a structured session on one topic",
+          "inherited": false
         },
         {
           "id": "ent_4kQ9xTmZ",
@@ -155,7 +170,8 @@ The plan data for a plugin with a free plan and a Pro plan sold at two credit am
           "limit_type": "unlimited",
           "quantity": null,
           "credit_cost": null,
-          "pitch": "generates a short list of fresh ideas on any topic"
+          "pitch": "generates a short list of fresh ideas on any topic",
+          "inherited": false
         },
         {
           "id": "ent_Vd2pLw8R",
@@ -165,7 +181,8 @@ The plan data for a plugin with a free plan and a Pro plan sold at two credit am
           "limit_type": "unlimited",
           "quantity": null,
           "credit_cost": null,
-          "pitch": "suggests topics to start a brainstorm with"
+          "pitch": "suggests topics to start a brainstorm with",
+          "inherited": true
         },
         {
           "id": "ent_Hn6cYs3J",
@@ -175,7 +192,8 @@ The plan data for a plugin with a free plan and a Pro plan sold at two credit am
           "limit_type": "total",
           "quantity": 50,
           "credit_cost": null,
-          "pitch": "keep the topics you want to come back to"
+          "pitch": "keep the topics you want to come back to",
+          "inherited": false
         }
       ]
     }
@@ -258,6 +276,10 @@ The plan data for a plugin with a free plan and a Pro plan sold at two credit am
         <ResponseField name="quantity" type="number | null">
           How many credits, or `null` when unlimited.
         </ResponseField>
+
+        <ResponseField name="inherited" type="boolean">
+          `true` when a lower plan includes the same credits. Always `false` on your first plan.
+        </ResponseField>
       </Expandable>
     </ResponseField>
 
@@ -313,6 +335,10 @@ The plan data for a plugin with a free plan and a Pro plan sold at two credit am
 
         <ResponseField name="pitch" type="string | null">
           The end of a sentence describing the feature, or `null` if it has none. See [Feature pitches](#feature-pitches).
+        </ResponseField>
+
+        <ResponseField name="inherited" type="boolean">
+          `true` when a lower plan includes the feature with the same `limit_type`, `quantity`, and `credit_cost`. Always `false` on your first plan. To only show each plan's unique features & increased limits, list the features where it's `false`, then include a line like "Everything in Free" that names the lower plan.
         </ResponseField>
       </Expandable>
     </ResponseField>
