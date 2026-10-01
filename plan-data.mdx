@@ -262,7 +262,6 @@ The plan data for a plugin with a free plan and a Pro plan sold at two credit am
     </ResponseField>
 
     <ResponseField name="credit_tiers" type="object[] | null">
-      {/* TODO(copy): drafted with credit tiers. */}
       The credit amounts the plan is sold at, from least to most expensive, or `null` when the plan comes at one amount. Each tier is its own subscription with its own prices, so give the visitor a way to pick one, like a dropdown, and send them to the picked tier's `plan_selected_url`. A page that ignores tiers still works: the plan's own `slug`, `prices`, and `credits` are the cheapest tier's.
 
       <Expandable title="properties" defaultOpen>

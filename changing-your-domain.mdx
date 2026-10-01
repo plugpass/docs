@@ -31,7 +31,6 @@ Point the old hostname at a proxied placeholder record. Add a Redirect Rule for 
 
 **Netlify**
 
-{/* TODO(copy): Netlify and Vercel split out, since the old rule was Netlify syntax only. */}
 Add a rule to your `_redirects` file, such as `/* https://new.example.com/:splat 301!`.
 
 **Vercel**
@@ -73,7 +72,6 @@ You should land on `https://new.example.com/signup` with `feature`, `connect` an
 
 ## Implement required plugin changes
 
-{/* TODO(copy): now covers a server move too. */}
 Changing your domain or moving your MCP server requires implementation of the monetization code in your plugin & MCP server. Run `/plugpass-implement-code-changes` in Claude Code or `$plugpass-implement-code-changes` in Codex, then publish and release the updated plugin.
 
 New installs will carry the new address, and existing outdated installs will keep working through the old address until they get the new version.
@@ -82,7 +80,6 @@ New installs will carry the new address, and existing outdated installs will kee
 
 ### Which one are you?
 
-{/* TODO(copy): points server movers at the new section. */}
 If your plugin offers MCP tools of its own, you run your own MCP server, and the two steps above are all a domain change needs. If that server is moving to a new URL too, see [If you move your own MCP server](#if-you-move-your-own-mcp-server).
 
 If the only tool your plugin exposes is the access check (`yourplugin_check_access`), Plugpass hosts your MCP server and the rest of this section applies.
@@ -102,17 +99,14 @@ Proxy these two paths to your new domain instead of redirecting them.
 
 Everything else keeps the redirect from the first section.
 
-{/* TODO(copy): proxy requirements, new. */}
 Your proxy must connect to the new domain under the new domain's name and pass the `Authorization` header through. It must also send your old domain in an `X-Forwarded-Host` header, which is how installed copies keep recognizing the connector.
 
 <Warning>
-  {/* TODO(copy): what a blanket redirect actually does, corrected. */}
   **Do not redirect `/mcp`.** An installed copy only accepts the connector at the address it connected to, so a redirect to your new domain makes it refuse the connection. The redirect resolves cleanly and looks like it worked.
 </Warning>
 
 **Cloudflare**
 
-{/* TODO(copy): Worker recipe, new. */}
 One Worker on the old domain can do both jobs. Remove the Redirect Rule, create a Worker with this code, and add a route for `old.example.com/*` to it.
 
 ```js
@@ -132,7 +126,6 @@ export default {
 
 **nginx**
 
-{/* TODO(copy): label and closing line, reworded. */}
 Any other proxy that can route by path works the same way.
 
 ```nginx
@@ -175,7 +168,6 @@ To give it up, remove the domain on the **Domains** page in your publisher setti
 
 ## If you move your own MCP server
 
-{/* TODO(copy): server-move section, new. */}
 This applies when an MCP server you run moves to a new URL, whether or not your domain changes.
 
 Installed copies keep calling the old URL until users update to a version you released after the move. Plugpass keeps accepting the tokens they hold for it, so all the old URL needs is something answering there.

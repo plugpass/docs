@@ -177,3 +177,10 @@ html #content-area div.mdx-content .prose > span[data-as='p'] {
 html.dark #header {
   border-bottom-color: rgb(255 255 255 / 15%);
 }
+
+/* Dark-mode page text in 70% white. Mintlify's dark prose inherits the page
+   wrapper's gray-400, which reads as dim beside full-white bold and headings.
+   Covers the body and the page description, both of which are `.prose`. */
+html.dark .prose {
+  color: rgb(255 255 255 / 70%);
+}

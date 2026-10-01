@@ -3,15 +3,13 @@ title: "Test users"
 description: "Try your plugin as a user would, before you publish and before every change, without paying."
 ---
 
-{/* TODO(copy): the whole page, new (drafted). */}
-
 A test user is an account with you that you designate by email on a plugin's **Test** page. It sees the version you choose, its purchases are simulated, and its usage counts for nothing. Use one to try sign-up, premium features, upgrades, and billing changes exactly as a user would.
 
 A plugin's sidebar ends with the **Release** section: **Implementation**, **Test**, and **Publish plugin**. Test opens once the implementation step is complete, and a test user's **Test as user** turns on once the version it tests is ready: the current draft, or the production version.
 
 ## Setting up a test user
 
-On the Test page, click **Add test user**, enter an email, and choose:
+On the Test page, click **New test user**, leave **User type** on **Internal**, enter an email, and choose:
 
 - **Version**: the current draft or production. The draft is the default. Before you publish, only the draft exists; after, a publish or a new edit moves the test user automatically.
 - **Starting state**: not signed up, signed up (when the plugin offers no free plan), or a plan and term. The test user is put into it when you add them and every time you reset them.
@@ -19,16 +17,40 @@ On the Test page, click **Add test user**, enter an email, and choose:
 
 Adding an email that already has an account with you converts that account into a test user. An account with a live subscription can't be converted; cancel it first.
 
+## Test users made for you
+
+Every plugin gets three test users without anyone adding them:
+
+- **Your own email**, on the current draft and starting not signed up, the first time you open the plugin's Test page (or list its test users through the Plugpass plugin). Each member of your publisher gets their own.
+- **The OpenAI reviewer test user** and **the Anthropic reviewer test user**, for the reviewers of the ChatGPT and Claude plugin directories. See [Reviewer test users](#reviewer-test-users).
+
+If your email already has an account with you, it becomes a test user and keeps its state until you first reset it, which converts it the way adding the email would. An account with a live subscription stays an ordinary account.
+
+These test users can't be deleted. When a member leaves your publisher, their own becomes an ordinary test user you can delete.
+
+## Reviewer test users
+
+When you submit your plugin to the ChatGPT or Claude plugin directory, give the reviewers the matching reviewer test user's login. **Copy login info** on its row copies its email or its password. The plugin's **Install** page links to it from each distribution card's submission recommendation.
+
+To give another plugin directory's reviewers a login, click **New test user**, choose **Reviewer** as the user type, and enter the reviewers' company name. Its email is made from the name, in the same form as the others. Unlike the OpenAI and Anthropic reviewer test users, you can delete it.
+
+A reviewer test user works like any other test user, with a few differences:
+
+- **It's always on production and your top plan**: the most expensive plan (for a plan with credit tiers, its most expensive tier), on annual billing when the plan offers it. A publish that changes your top plan moves it there. Reviewers install your published plugin, so there's nothing to edit.
+- **It's exempt from limits.** Every premium feature works without using up any allowance.
+- **It signs in with its password.** On the plugin's login page, entering its email asks for the password instead of sending a code. Its address can't receive email, so there's no password reset and no code to fall back on.
+- **Reviewers see your plugin as a subscriber would**, with no test mode bar.
+- **Regenerate password** replaces the password and signs the account out everywhere it's signed in, in browsers and AI products. Give reviewers the new one.
+
+It has no **Test as user**, and the `plugpass-test-plugin` skill doesn't offer it.
+
 ## Testing
 
-{/* TODO(copy): the plan data feed sentence, new. */}
 Click **Test as user** on the row. It opens the plugin's pages in a new tab, signed in as the test user, with a bar across the top naming the version being shown and an **End test session** link that returns the browser to a visitor's view. Everything works as it would for a real user: sign-up, the account page, checkout, and billing. Payments are simulated, so **Pay now (Test)** completes without a card being charged. A pricing page on your own site that reads the plan data feed shows the same version, when your site is on the same domain as the plugin's pages (for example `coolplugin.com` and `get.coolplugin.com`).
 
 Before you publish, the plugin's pages are only reachable from a browser opened this way; anyone else sees a not-found page.
 
 To test the plugin's premium features in an AI product, run the `plugpass-test-plugin` skill from your plugin's directory in Claude Code or Codex. For a test user on the current draft it installs your working copy as a test version on the AI product you choose; a test user on production uses the published plugin, so the real install is what you test. Either way it opens a link that puts your browser into test mode for the test user you pick. Sign in as that test user when the plugin asks you to connect. The `plugpass-implement-code-changes` skill offers to run it for you when it finishes.
-
-{/* TODO(copy): the publisher-hosted server note (drafted). */}
 
 If your plugin runs its own MCP server, the test version connects to that server's **test path**, the same server at its URL plus `/test`. The test path always asks users to sign in and only admits your test users, so you can test sign-up, paywalls, and upgrades against your unpublished changes as soon as the server is deployed, before you publish. Read [Your own MCP server](/your-mcp-server) for how the two paths behave.
 
@@ -38,7 +60,7 @@ While a test user on the draft is signed in, the plugin's install page offers **
 
 **Reset** returns the test user to the starting state: the subscription, the usage counters, and the account state for the plugin are cleared and the starting status is applied again. It's disabled while the test user is already in it. Reset never touches your AI product's connection to the plugin; to test a first install, disconnect or remove the connector there first.
 
-**Remove** clears the same state and deletes the test user. The email becomes an ordinary visitor's again.
+**Delete test user** clears the same state and deletes the test user. The email becomes an ordinary visitor's again.
 
 ## What test users don't affect
 

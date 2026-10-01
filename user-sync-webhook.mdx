@@ -3,8 +3,6 @@ title: "User sync webhook"
 description: "Send your users to your own tools as they sign up, change, and leave."
 ---
 
-{/* TODO(copy): the whole page, new (drafted). */}
-
 The user sync webhook sends a request to your server each time one of your users signs up, changes, or deletes their account. Use it to keep your email service, CRM, or database in step with your users.
 
 Set it up for each plugin on the plugin's **Integrations** page, under **User sync**. A plugin's webhook receives the people who use that plugin, along with every plugin of yours they use.
@@ -193,7 +191,6 @@ from standardwebhooks.webhooks import Webhook, WebhookVerificationError
 
 webhook = Webhook(os.environ["PLUGPASS_WEBHOOK_SECRET"])
 app = Flask(__name__)
-
 
 @app.post("/webhooks/plugpass")
 def plugpass_webhook():

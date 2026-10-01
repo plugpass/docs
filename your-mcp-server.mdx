@@ -3,8 +3,6 @@ title: "Your own MCP server"
 description: "How a plugin's own MCP server enforces access: the canonical path that turns on when you publish, and the test path your test users use."
 ---
 
-{/* TODO(copy): the whole page, new (drafted). */}
-
 When your plugin runs its own MCP server, the `plugpass-implement-code-changes` skill writes the access layer into the server's source: it validates the sign-in tokens Plugpass issues, asks Plugpass whether a user may use a premium feature, and answers with the paywall when they may not. That layer serves two paths.
 
 ## The canonical path
