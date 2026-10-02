@@ -22,4 +22,6 @@ The `plugpass-test-plugin` skill installs a test version of your plugin that poi
 
 ## Deploy, then test, then publish
 
-The order is up to you. Deploy your server whenever you like: real users see no change until you publish. Test against the test path, then publish when you are ready. If you deploy from the `plugpass-implement-code-changes` skill's closing prompt, the publish page marks that server's deploy task done for you.
+Deploy your server before you publish. Deploying turns on no new sign-in, limits, or paywalls for your users until you publish, so deploy whenever you like and test against the test path in the meantime.
+
+Push or merge your plugin's own changes after you publish, so users receive them with your plans already live. Your first publish is the exception. It turns your server's sign-in and enforcement on for every installed version of your plugin at once, so push or merge the plugin first. If your plugin is listed in the Claude Plugin Directory or the ChatGPT Plugin Directory, publish the new version there too, since a directory only delivers a version it has published. If your plugin already has users, wait about a day before you publish so most users will have updated to the plugin version that properly handles your premium feature access checks. The publish page lays out the steps in order for each publish.

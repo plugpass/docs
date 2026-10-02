@@ -3,9 +3,9 @@
   "theme": "maple",
   "name": "Plugpass",
   "colors": {
-    "primary": "#6932FF",
+    "primary": "#009462",
     "light": "#FFFFFF",
-    "dark": "#6932FF"
+    "dark": "#009462"
   },
   "favicon": "/favicon.svg",
   "logo": {
