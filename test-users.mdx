@@ -56,6 +56,22 @@ The test version connects to your plugin's connector at its **test path**, the c
 
 While a test user on the draft is signed in, the plugin's install page offers **Instructions for test mode** alongside the instructions real users see, and the connect page names the connector's test path.
 
+If you connect to the test path while signed in on the plugin's site as an account that isn't one of its test users, the sign-in stops at a page that says so. Its **Go to testing dashboard** button opens the plugin's Test page, where **Test as user** signs you in as a test user, and then you connect again.
+
+### Testing on ChatGPT
+
+ChatGPT reaches your plugin's connector through an app you create in ChatGPT's developer mode, once per plugin. The `plugpass-test-plugin` skill walks you through each step and links straight to each screen. It opens the test mode link first, because creating or connecting the app signs in as whoever is signed in on your plugin's site.
+
+1. Turn on developer mode in ChatGPT's plugin settings.
+2. Create an app named after your plugin with "test" at the end, at your connector's test path, and paste its address into the skill.
+3. Upload the test plugin as a new version of the app's own plugin. If it shows **Install plugin**, install it, then open its settings and click **Connect another account**.
+
+The skill remembers the app, so each later run only uploads the test plugin again. The same upload runs in ChatGPT on the web and in the desktop app's Work and Codex. If your ChatGPT account has no developer mode, test in the ChatGPT desktop app instead, where the skill installs the test plugin from a local marketplace.
+
+When you're done, uninstall the test plugin from its menu, end your test session, and reinstall your plugin from its ChatGPT listing.
+
+While a test user on the draft is signed in, the connect page for ChatGPT opens their test app's settings, where **Connect another account** is.
+
 ## Resetting
 
 **Reset** returns the test user to the starting state: the subscription, the usage counters, and the account state for the plugin are cleared and the starting status is applied again. It's disabled while the test user is already in it. Reset never touches your AI product's connection to the plugin; to test a first install, disconnect or remove the connector there first.

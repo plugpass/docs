@@ -225,3 +225,14 @@ From a copy installed before the move, use a premium feature. If it runs, the ol
 Keep the old address answering while outdated installs are still in use.
 
 To give it up, remove its domain on the **Domains** page in your publisher settings. Plugpass then stops accepting tokens for it, so do this last.
+
+## If your plugin is in the ChatGPT Plugin Directory
+
+A ChatGPT listing connects to the MCP server address your plugin had when you submitted it. That address can't change. OpenAI treats a plugin at a new address as a new plugin, with its own submission and review.
+
+- **A listing made on your plugin's Plugpass subdomain** keeps working when you add or change a custom domain, since the subdomain always serves your connector.
+- **A listing made on your custom domain** stops working when you replace or remove that domain. To keep it, keep the old address answering with the proxy in [Carve the MCP paths out of the redirect](#carve-the-mcp-paths-out-of-the-redirect), or submit your plugin to OpenAI again as a new plugin.
+- **A listing made on your own MCP server** stops working when you move that server to a new URL. To keep it, keep the old address answering as [If you move your own MCP server](#if-you-move-your-own-mcp-server) describes, or submit your plugin to OpenAI again as a new plugin.
+- **Moving the access check to another of your MCP servers** keeps your listing working as long as the old server keeps running, since the old server keeps its access check tool. A listing connects to one server only, so to move your ChatGPT users to the new server, submit a new plugin to OpenAI that uses it. If the new server is on the same domain as the old one, a new version of your plugin can use it instead.
+
+Removing a domain on the **Domains** page retires its old addresses for good, which ends a listing made on one of them. The **Website**, **Access check tool**, and **Domains** pages warn you before a change that would stop your ChatGPT listing working.

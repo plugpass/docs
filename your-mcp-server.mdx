@@ -18,7 +18,11 @@ The server learns whether the plugin is published from Plugpass and keeps the an
 
 The same server at its URL plus `/test` (for example `https://mcp.example.com/mcp/test`) always asks users to sign in, from the first deploy, and only your [test users](/test-users) can sign in to it. It runs the same tools and the same access checks as the canonical path, against your current draft, so what you test is the code you will ship.
 
-The `plugpass-test-plugin` skill installs a test version of your plugin that points at the test path. On Claude and ChatGPT, where a connector is added by URL, the connect page shows the test path to a test user on the draft; add it as a connector, turn the real connector off while you test since the two carry the same tool names, and remove the test connector when you are done.
+The `plugpass-test-plugin` skill installs a test version of your plugin that points at the test path. On Claude, where a connector is added by URL, the connect page shows the test path to a test user on the draft. Add it as a connector, turn the real connector off while you test since the two carry the same tool names, and remove the test connector when you are done. On ChatGPT, the test plugin reaches the test path through an app you create in developer mode, as [Testing on ChatGPT](/test-users#testing-on-chatgpt) describes.
+
+## When Plugpass's signing keys can't be fetched
+
+Your server checks every sign-in token against Plugpass's public signing keys, which it fetches and keeps for a few hours. If it can't fetch them, it answers `503` with `Retry-After` instead of asking the user to sign in again, so a brief outage never makes an AI product show your users as signed out. The `plugpass-implement-code-changes` skill adds this to your server on its next run.
 
 ## Deploy, then test, then publish
 
