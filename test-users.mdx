@@ -26,13 +26,13 @@ Every plugin gets three test users without anyone adding them:
 
 If your email already has an account with you, it becomes a test user and keeps its state until you first reset it, which converts it the way adding the email would. An account with a live subscription stays an ordinary account.
 
-These test users can't be deleted. When a member leaves your publisher, their own becomes an ordinary test user you can delete.
+These test users can't be removed. When a member leaves your publisher, their own becomes an ordinary test user you can remove.
 
 ## Reviewer test users
 
 When you submit your plugin to the ChatGPT or Claude plugin directory, give the reviewers the matching reviewer test user's login. **Copy login info** on its row copies its email or its password. The plugin's **Install** page links to it from each distribution card's submission recommendation.
 
-To give another plugin directory's reviewers a login, click **New test user**, choose **Reviewer** as the user type, and enter the reviewers' company name. Its email is made from the name, in the same form as the others. Unlike the OpenAI and Anthropic reviewer test users, you can delete it.
+To give another plugin directory's reviewers a login, click **New test user**, choose **Reviewer** as the user type, and enter the reviewers' company name. Its email is made from the name, in the same form as the others. Unlike the OpenAI and Anthropic reviewer test users, you can remove it.
 
 A reviewer test user works like any other test user, with a few differences:
 
@@ -76,7 +76,9 @@ While a test user on the draft is signed in, the connect page for ChatGPT opens 
 
 **Reset** returns the test user to the starting state: the subscription, the usage counters, and the account state for the plugin are cleared and the starting status is applied again. It's disabled while the test user is already in it. Reset never touches your AI product's connection to the plugin; to test a first install, disconnect or remove the connector there first.
 
-**Delete test user** clears the same state and deletes the test user. The email becomes an ordinary visitor's again.
+**Remove test user** returns the person to being a normal user. Their account stays, along with anything your own server keeps for them, and their subscription and usage for the plugin are cleared.
+
+To delete the account completely instead, click **Delete user** in the same dialog. It works like deleting the user on the **Users** page of your publisher settings, ending their access to all of your plugins. An account with an active paid subscription can't be deleted until the subscription is canceled.
 
 ## What test users don't affect
 
