@@ -3,7 +3,7 @@ title: "Your own MCP server"
 description: "How a plugin's own MCP server enforces access: the canonical path that turns on when you publish, and the test path your test users use."
 ---
 
-When your plugin runs its own MCP server, the `plugpass-implement-code-changes` skill writes the access layer into the server's source: it validates the sign-in tokens Plugpass issues, asks Plugpass whether a user may use a premium feature, and answers with the paywall when they may not. That layer serves two paths.
+When your plugin runs its own MCP server, the `plugpass-implement-code-changes` skill writes the access layer into the server's source: it validates the login tokens Plugpass issues, asks Plugpass whether a user may use a premium feature, and answers with the paywall when they may not. That layer serves two paths.
 
 ## The canonical path
 
@@ -22,10 +22,16 @@ The `plugpass-test-plugin` skill installs a test version of your plugin that poi
 
 ## When Plugpass's signing keys can't be fetched
 
-Your server checks every sign-in token against Plugpass's public signing keys, which it fetches and keeps for a few hours. If it can't fetch them, it answers `503` with `Retry-After` instead of asking the user to sign in again, so a brief outage never makes an AI product show your users as signed out. The `plugpass-implement-code-changes` skill adds this to your server on its next run.
+Your server checks every login token against Plugpass's public signing keys, which it fetches and keeps for a few hours. If it can't fetch them, it answers `503` with `Retry-After` instead of asking the user to sign in again, so a brief outage never makes an AI product show your users as signed out. The `plugpass-implement-code-changes` skill adds this to your server on its next run.
+
+## What a tool call uses
+
+A paid tool's call uses up its allowance only when the tool succeeds. When a call throws or returns an error, the access layer gives back what the call took, so your users never pay for a call that failed.
+
+A tool can also be limited by the things it handles instead of its uses, like the leads it returns or the leads it's sent. Sync finds these counts in your server's code and names each one. Your Plans page then offers them as limits and credit costs, and once you pick one, you can rename it on your Features page. On its next run, the `plugpass-implement-code-changes` skill wires your tool to report each count on every call. When a user has fewer left than a call finds, the result is trimmed to what they have left, with a note saying what was held back and how to get the rest.
 
 ## Deploy, then test, then publish
 
-Deploy your server before you publish. Deploying turns on no new sign-in, limits, or paywalls for your users until you publish, so deploy whenever you like and test against the test path in the meantime.
+Deploy your server before you publish. Deploying doesn't ask your users to sign in or turn on limits or paywalls until you publish, so deploy whenever you like and test against the test path in the meantime.
 
-Push or merge your plugin's own changes after you publish, so users receive them with your plans already live. Your first publish is the exception. It turns your server's sign-in and enforcement on for every installed version of your plugin at once, so push or merge the plugin first. If your plugin is listed in the Claude Plugin Directory or the ChatGPT Plugin Directory, publish the new version there too, since a directory only delivers a version it has published. If your plugin already has users, wait about a day before you publish so most users will have updated to the plugin version that properly handles your premium feature access checks. The publish page lays out the steps in order for each publish.
+Push or merge your plugin's own changes after you publish, so users receive them with your plans already live. Your first publish is the exception. It starts requiring users to sign in and enforcing your plans on every installed version of your plugin at once, so push or merge the plugin first. If your plugin is listed in the Claude Plugin Directory or the ChatGPT Plugin Directory, publish the new version there too, since a directory only delivers a version it has published. If your plugin already has users, wait about a day before you publish so most users will have updated to the plugin version that properly handles your premium feature access checks. The publish page lays out the steps in order for each publish.
