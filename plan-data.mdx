@@ -3,7 +3,7 @@ title: "Plan data"
 description: "Everything your pricing page needs to show your plans."
 ---
 
-Your plan data describes your published plans: each plan's prices, credits, and features, and where its call-to-action button takes a visitor. Use it to build a pricing page on your own site that always matches what you've published.
+Your plan data describes your published plans, with each plan's prices, credits, and features, and where its call-to-action button takes a visitor. Use it to build a pricing page on your own site that always matches what you've published.
 
 ## Fetch your plan data
 
@@ -269,7 +269,7 @@ The plan data for a plugin with a free plan and a Pro plan sold at two credit am
         </ResponseField>
 
         <ResponseField name="change_type" type="string">
-          What choosing this plan and interval means for the visitor: `signup`, `upgrade`, `downgrade`, or `current_plan`. See [Change types](#change-types).
+          What choosing this plan and interval means for the visitor, one of `signup`, `upgrade`, `downgrade`, or `current_plan`. See [Change types](#change-types).
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -293,7 +293,7 @@ The plan data for a plugin with a free plan and a Pro plan sold at two credit am
     </ResponseField>
 
     <ResponseField name="credit_tiers" type="object[] | null">
-      The credit amounts the plan is sold at, from least to most expensive, or `null` when the plan comes at one amount. Each tier is its own subscription with its own prices, so give the visitor a way to pick one, like a dropdown, and send them to the picked tier's `plan_selected_url`. A page that ignores tiers still works: the plan's own `slug`, `prices`, and `credits` are the cheapest tier's.
+      The credit amounts the plan is sold at, from least to most expensive, or `null` when the plan comes at one amount. Each tier is its own subscription with its own prices, so give the visitor a way to pick one, like a dropdown, and send them to the picked tier's `plan_selected_url`. A page that ignores tiers still works. The plan's own `slug`, `prices`, and `credits` are the cheapest tier's.
 
       <Expandable title="properties" defaultOpen>
         <ResponseField name="slug" type="string">
@@ -323,7 +323,7 @@ The plan data for a plugin with a free plan and a Pro plan sold at two credit am
         </ResponseField>
 
         <ResponseField name="display_name" type="string">
-          The feature's name as a label, like `Quick brainstorm`. It's the name you gave the feature with its first letter capitalized, or exactly as you typed it when its first word has a capital, like `iOS shortcuts`.
+          The feature's name as a label, like `Quick brainstorm`.
         </ResponseField>
 
         <ResponseField name="mid_sentence_name" type="string">
@@ -426,7 +426,7 @@ Set each plan's call-to-action button to its `plan_selected_url` for the selecte
 
 ## Showing a limit
 
-Show a feature's limit as its number and what it counts, with the singular when the number is 1. A feature limited in uses names itself, while a feature with a `unit` shows the unit alone, since the unit already says what it counts.
+Show a feature's limit as its number and what it counts, with the singular when the number is 1. A feature limited in uses names itself, while a feature with a `unit` shows the unit alone.
 
 | Feature | Example |
 | --- | --- |
