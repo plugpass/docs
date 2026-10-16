@@ -122,7 +122,7 @@ A `contact.deleted` carries only who to delete:
 
       <Expandable title="properties" defaultOpen>
         <ResponseField name="plugpass_id" type="string">
-          The plugin's ID, the `metadata.plugpass-plugin-id` in your `plugin.json`. It never changes.
+          The plugin's ID. It's at `metadata.plugpass-plugin-id` in your plugin's Claude or Codex manifest, or at `extensions["ai.plugpass"].pluginId` in its Agent Plugins manifest. It never changes.
         </ResponseField>
 
         <ResponseField name="name" type="string">
